@@ -16,6 +16,6 @@ example_chart = alt.Chart(source).mark_line().encode(
     y='f(x)'
 )
 
-st.DataFrame(source)
+st.dataframe(source)
 
 st.altair_chart(example_chart)
