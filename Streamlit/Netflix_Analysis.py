@@ -5,10 +5,7 @@ import altair as alt
 
 st.title('Our Netflix Analysis')
 
-st.header("John Kaspers (kaspersj), \
-            Ong Hock Boon Steven David (steveong), \
-            Chi Huen Fong (chfong)
- ")
+st.header("John Kaspers (kaspersj), Ong Hock Boon Steven David (steveong), Chi Huen Fong (chfong)")
 st.markdown('\n\n')
 st.header("Supplementary visualizations - some are interactive!")
 st.markdown('\n\n')
