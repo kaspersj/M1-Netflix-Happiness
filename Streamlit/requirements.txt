@@ -1,21 +1,17 @@
-watermark==2.3.1
-openpyxl==3.0.10
-xlrd==2.0.1
-
-streamlit
-altair-ally
-xlwt==1.3.0
-
-
 numpy
 pandas
 altair
+streamlit
 
-seaborn
-geopandas
 matplotlib
 matplotlib.pyplot
 matplotlib.dates
+
+altair-ally
+xlwt==1.3.0
+
+seaborn
+geopandas
 
 time
 datetime
@@ -30,3 +26,7 @@ plotly.figure_factory
 plotly.express
 plotly.subplots
 plotly.graph_objects
+
+watermark==2.3.1
+openpyxl==3.0.10
+xlrd==2.0.1
