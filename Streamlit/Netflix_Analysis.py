@@ -8,7 +8,7 @@ import pandas as pd
 import geopandas as gpd
 
 #Matplotlib library
-%matplotlib inline
+# %matplotlib inline
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -29,7 +29,7 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
-%reload_ext watermark
+# %reload_ext watermark
 
 ############################ Disabling Maxrows ##############################
 alt.data_transformers.disable_max_rows()
