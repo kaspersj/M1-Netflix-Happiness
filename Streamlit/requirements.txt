@@ -15,7 +15,7 @@ geopandas
 
 datetime
 timedelta
-pickle
+pickle5
 folium
 
 
