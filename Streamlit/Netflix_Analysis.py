@@ -47,197 +47,165 @@ st.markdown('\n\n')
 # https://www.comparitech.com/blog/vpn-privacy/countries-netflix-cost/
 # World Happiness Report
 # https://www.kaggle.com/datasets/ajaypalsinghlo/world-happiness-report-2021
+# World Development Indicators
+# https://datatopics.worldbank.org/world-development-indicators/
 
-netflix_pricing_df = pd.read_csv('Netflix_Pricing.csv')
+###########################################################################
 
-# Happiness Dataframe #
-happiness_df = pd.read_csv('world-happiness-report-2021.csv')
-happiness_df = happiness_df.drop(['Dystopia + residual', 'lowerwhisker', 'upperwhisker'], axis = 1)
-happiness_df = happiness_df.rename(columns={'Country name': 'Country'})
-happiness_df = happiness_df.replace(to_replace="Taiwan Province of China", value = "Taiwan")
-happiness_df = happiness_df.replace(to_replace="Bosnia and Herzegovina", value = "Bosnia & Herzegovina")
-happiness_df = happiness_df.replace(to_replace="Hong Kong S.A.R. of China", value = "Hong Kong")
-happiness_df = happiness_df.replace(to_replace="Palestinian Territories", value = "Palestine")
-happiness_df = happiness_df.replace(to_replace="Russia", value = "Russian Federation")
+# We export the final dataframe as df.csv
+df = pd.read_csv('df.csv')
+st.dataframe(df)
 
-# Visualizing the happiness_df #
-aly.dist(happiness_df)
-aly.dist(happiness_df, mark='bar')
-aly.pair(happiness_df)
+# Drop first column
+df = df.iloc[: , 1:]
+df.head()
 
-# CPI Dataframe #
-CPI_Inflation_df = pd.read_csv('CPI_Inflation.csv')
-CPI_Inflation_df_1 = CPI_Inflation_df.loc[:, ["Country Name","2020"]]
-CPI_Inflation_df_1 = CPI_Inflation_df_1.rename(columns={'2020': 'Inflation'})
+happiness_years = pd.read_csv('Happiness.csv')
+happiness_years.head()
 
-# Population Dataframe #
-Population_df = pd.read_excel('Pop_Data.xls')
-Population_df_1 = Population_df.loc[:, ["Country Name","2020"]]
-Population_df_1 = Population_df_1.rename(columns={'2020': 'Population'})
+# Drop first column
+happiness_years = happiness_years.iloc[: , 1:]
+happiness_years.head()
 
-# Indicators Dataframe #
-indicators_df=pd.merge(CPI_Inflation_df_1,Population_df_1,on='Country Name')
-indicators_df = indicators_df.rename(columns={'Country Name': 'Country'})
-indicators_df = indicators_df.replace(to_replace="Slovak Republic", value = "Slovakia")
-indicators_df = indicators_df.replace(to_replace="Korea, Rep.", value = "South Korea")
-indicators_df = indicators_df.replace(to_replace="Turkiye", value = "Turkey")
-indicators_df = indicators_df.replace(to_replace="Venezuela, RB", value = "Venezuela")
-indicators_df = indicators_df.replace(to_replace="Yemen, Rep.", value = "Yemen")
-
-# Netflix Dataframe #
-netflix_df_raw = pd.read_csv('Netflix_Pricing.csv')
-netflix_df_raw = netflix_df_raw.set_index("Country")
-netflix_df2_raw = netflix_df_raw.drop(["Maximum", "Minimum", "Average"]).reset_index()
-netflix_df2_raw.drop(netflix_df2_raw.tail(1).index,inplace=True)
-
-##### Filtering Netflix Dataframe ####
-features = ['Country', 'Price USD', '# of TV Shows', '# of Movies', 'Total Library Size', 'Price per Title']
-
-def df_filtered(df):
-    
-    condition_1 = df.columns.isin(features)
-    filtered_df_cond = df.columns[condition_1]
-    df1=df[filtered_df_cond]
-    ## Order the df column labels 
-    df1 = df1[["Country", 
-               "Price USD", 
-               "# of TV Shows", 
-               "# of Movies",
-               "Total Library Size",
-               "Price per Title"              
-              ]]
-    
-    #filtered_df = df1.groupby(['Region']).mean()
-    
-    return df1
-#########################
-
-netflix_df=df_filtered(netflix_df2_raw)
-
-####### Making our main Dataframe ##### 
-def main_df():
+region_grouped = df.groupby(['Region']).agg('mean')
+region_grouped
 
 
-    simi_merged_df=netflix_df.merge(happiness_df, on='Country', how = 'left')
-    df=simi_merged_df.merge(indicators_df, on='Country', how = 'left')
+########### Visualizing df ##########
+aly.dist(df, mark='bar')
 
-    df = df.rename(columns={'Regional indicator': 'Region',
-                            'Price USD':'Netflix Price'})
-    first_column = df.pop('Region')
-    df.insert(0, 'Region', first_column)
+g = sns.PairGrid(df, palette='rainbow', hue="Region")
+g.map_diag(sns.histplot)
+g.map_offdiag(sns.scatterplot)
+g.add_legend()
 
-    # Replace Gibraltar
-    df.at[37, 'Region']='Western Europe'
-    # Replace Bermuda
-    df.at[47, 'Region']='North America and ANZ'
-    # Replace Qatar
-    df.at[54, 'Region']='Middle East and North Africa'
-    # Replace Monaco
-    df.at[57, 'Region']='Western Europe'
-    # Replace Andorra
-    df.at[69, 'Region']='Middle East and North Africa'
-    # Replace San Marino
-    df.at[74, 'Region']='Western Europe'
-    # Replace Oman
-    df.at[77, 'Region']='Middle East and North Africa'
-    # Replace French Guiana
-    df.at[80, 'Region']='Western Europe'
-    # Replace French Polynesia
-    df.at[83, 'Region']='Western Europe'
-    # Replace Liechtenstein
-    df.at[87, 'Region']='Western Europe'
+####### Preparing the Happiness dataframe
 
-    return df
-############## Defining df, and filtering ###################
+# Drop NaN in happiness score
+cleaned_df = df.dropna(subset=["Happiness score"])
+cleaned_df.head()
 
-df = main_df()
-df = df.rename(columns={'Regional indicator': 'Region',
-                       'Price USD':'Netflix Price'})
-first_column = df.pop('Region')
-df.insert(0, 'Region', first_column)
-
-# Replace Gibraltar
-df.at[37, 'Region']='Western Europe'
-# Replace Bermuda
-df.at[47, 'Region']='North America and ANZ'
-# Replace Qatar
-df.at[54, 'Region']='Middle East and North Africa'
-# Replace Monaco
-df.at[57, 'Region']='Western Europe'
-# Replace Andorra
-df.at[69, 'Region']='Middle East and North Africa'
-# Replace San Marino
-df.at[74, 'Region']='Western Europe'
-# Replace Oman
-df.at[77, 'Region']='Middle East and North Africa'
-# Replace French Guiana
-df.at[80, 'Region']='Western Europe'
-# Replace French Polynesia
-df.at[83, 'Region']='Western Europe'
-# Replace Liechtenstein
-df.at[87, 'Region']='Western Europe'
-
-########################### Visualizing df ################################
-aly.nan(df)
-aly.pair(df, 'Region')
-
-cor_data = (df.drop(columns=['Country'])
-              .corr().stack()
-              .reset_index()     # The stacking results in an index on the correlation values, we need the index as normal columns for Altair
-              .rename(columns={0: 'correlation', 'level_0': 'variable', 'level_1': 'variable2'}))
-cor_data['correlation_label'] = cor_data['correlation'].map('{:.2f}'.format)  # Round to 2 decimal
-
-
-############################ Correlation viz  #############################################
-base = alt.Chart(cor_data).encode(
-    x='variable2:O',
-    y='variable:O'    
+############ Happiness score chart by country ####
+st.markdown('Happiness Score Chart')
+country_happiness_chart = alt.Chart(cleaned_df).mark_bar().encode(
+    x = alt.X('Happiness score:Q'),
+    y = alt.Y('Country:N', sort='-x')
+)
+st.altair_chart(country_happiness_chart)
+st.markdown('\n\n')
+st.markdown('Regional Happiness Score Chart')
+###### Regional happiness
+happiness_score_by_country_chart = alt.Chart(cleaned_df).mark_bar().encode(
+    x = alt.X('Happiness score:Q'),
+    y = alt.Y('Region:N',sort='-x')
 )
 
-# Text layer with correlation labels
-# Colors are for easier readability
-text = base.mark_text().encode(
-    text='correlation_label',
-    color=alt.condition(
-        alt.datum.correlation > 0.5, 
-        alt.value('white'),
-        alt.value('black')
-    )
-)
+st.altair_chart(happiness_score_by_country_chart)
+################# Price of Netflix Worldwide
+fig = px.choropleth(df, 
+                        locations="Country", locationmode='country names',
+                    color="Netflix Price",
+                    hover_name="Country",
+                    color_continuous_scale=px.colors.sequential.Jet,
+                    labels= {'Netflix Price': 'Netflix Price'},
+                    title = 'Netflix Prices Worldwide 2021')
 
-# The correlation heatmap itself
-cor_plot = base.mark_rect().encode(
-    color='correlation:Q'
-)
+fig.update(layout=dict(title=dict(x=0.5)))
+# fig =  plt.subplots()
+# fig.show()
+st.plotly_chart(fig)
 
-final_chart = (cor_plot + text).properties(
-                height = 600,
-                width = 600,
-                title = {
-                    'text': 'Correlation between features',
-                    'subtitle': '(Correlation spotted between Netflix price with GDP, Life Expectancy, Happiness Score)',
-                    'subtitleColor': 'grey',
-                    'subtitleFontSize': 16
-                    #'subtitle': (excluding high income countries
-                    # 'subtitleColor': 'grey'
-                    # 'subtitleFontSize': 20
-                }
-               
-                ).configure_title(
-                    anchor = 'start',
-                    color = 'black',
-                    fontSize = 20,
-                    subtitleColor = 'grey',
-                    subtitleFontSize = 20
+##################### Happiness scores over time
+fig = px.choropleth(happiness_years, locations="Country", locationmode='country names',
+                    color="Happiness Score",
+                    hover_name="Country",
+                    color_continuous_scale=[[0, 'rgb(255, 0, 0)'],#red
+                      [0.25, 'rgb(255,165,0)'], #orange
+                      [0.5, 'rgb(255, 255, 0)'],#yellow
+                      [0.75, 'rgb(24,252,0)'], # green
+                      [1, 'rgb(0,100,10)']], # dark green
+                    animation_frame= "Year", range_color = [0,8],
+                    #labels= {'Happiness Score': 'Happiness Score 2015'},
+                    title = 'Happiness Score - 2015 to 2021',
+                    
                     )
 
-st.altair_chart(final_chart)
+fig.update(layout=dict(title=dict(x=0.5)))
 
-############################  ######################################## 
-aly.corr(df)
+fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
+           
+fig.show()
 
-############################ 2D histogram #############################
+st.plotly_chart(fig)
 
+st.markdown('\n\n')
+st.markdown('We tried to find happiness scores that changed over the years to gain some insight. For example:')
+
+############ Thomas' Correlation analysis
+fig, axes = plt.subplots(3, 2, figsize=(16,12))
+# Graph 1 - Netflix Price vs Explained by: Log GDP per capita
+sns.set_context("paper")
+tips = df
+sns.set_style("whitegrid")
+sns.regplot(ax=axes[0][0],x='Netflix Price', y = 'Explained by: Log GDP per capita', data = tips).set_title("Netflix Price vs Explained by: Log GDP per capita", 
+                                                                                   fontdict = { 'fontsize': 15})
+sns.despine()
+axes[0][0].set(xlabel=None)
+
+
+# Graph 2 - Netflix Price vs Explained by: Social support
+sns.set_context("paper")
+tips = df
+sns.set_style("whitegrid")
+sns.regplot(ax=axes[0][1],x='Netflix Price', y = 'Explained by: Social support', data = tips).set_title("Netflix Price vs Explained by: Social support", 
+                                                                                   fontdict = { 'fontsize': 15})
+sns.despine()
+axes[0][1].set(xlabel=None)
+
+# Graph 3 - Netflix Price vs Explained by: Healthy life expectancy
+sns.set_context("paper")
+tips = df
+sns.set_style("whitegrid")
+sns.regplot(ax=axes[1][0],x='Netflix Price', y = 'Explained by: Healthy life expectancy', data = tips).set_title("Netflix Price vs Explained by: Healthy life expectancy", 
+                                                                                   fontdict = { 'fontsize': 15})
+sns.despine()
+axes[1][0].set(xlabel=None)
+
+# Graph 4 - Netflix Price vs Explained by: Freedom to make life choices
+sns.set_context("paper")
+tips = df
+sns.set_style("whitegrid")
+sns.regplot(ax=axes[1][1],x='Netflix Price', y = 'Explained by: Freedom to make life choices', data = tips).set_title("Netflix Price vs Explained by: Freedom to make life choices", 
+                                                                                   fontdict = { 'fontsize': 15})
+sns.despine()
+axes[1][1].set(xlabel=None)
+
+# Graph 5 - Netflix Price vs Explained by: Generosity
+sns.set_context("paper")
+tips = df
+sns.set_style("whitegrid")
+sns.regplot(ax=axes[2][0],x='Netflix Price', y = 'Explained by: Generosity', data = tips).set_title("Netflix Price vs Explained by: Generosity", 
+                                                                                   fontdict = { 'fontsize': 15})
+sns.despine()
+
+# Graph 6 - Netflix Price vs Explained by: Perceptions of corruption
+sns.set_context("paper")
+tips = df
+sns.set_style("whitegrid")
+sns.regplot(ax=axes[2][1],x='Netflix Price', y = 'Explained by: Perceptions of corruption', data = tips).set_title("Netflix Price vs Explained by: Perceptions of corruption", 
+                                                                                   fontdict = { 'fontsize': 15})
+sns.despine()
+
+
+# Set x,y-axis label
+
+axes[2][0].set_xlabel('Netflix Price', size = 12)
+axes[2][1].set_xlabel('Netflix Price', size = 12)
+
+# Adjust the subplot layout parameters
+fig.subplots_adjust(hspace=0.3, wspace=0.2)
+st.pyplot(fig)
+#################
 def heat_2d_hist(var1, var2, df, density=True):
     
     H, xedges, yedges = np.histogram2d(df[var1], df[var2], density=density)
@@ -267,25 +235,37 @@ def heat_2d_hist(var1, var2, df, density=True):
     
     return res.dropna() # Drop all combinations for which no values where found
 
-############################# Cleaning up df ######################################
+
+################# Interactive Heatmap of Correlations
+
 Cor_df = df
 
 Cor_df.dropna(inplace=True)
 ## Drop those label columns
 value_columns = Cor_df.columns.drop(['Country', 'Region'])
 Netflix_data_2dbinned = pd.concat([heat_2d_hist(var1, var2, Cor_df) for var1 in value_columns for var2 in value_columns])
+Netflix_data_2dbinned.head()
 
 
-############################## Correlation Heatmap #########################################
+####### Correlation Data
+cor_data = (df.drop(columns=['Country'])
+              .corr().stack()
+              .reset_index()     # The stacking results in an index on the correlation values, we need the index as normal columns for Altair
+              .rename(columns={0: 'correlation', 'level_0': 'variable', 'level_1': 'variable2'}))
+cor_data['correlation_label'] = cor_data['correlation'].map('{:.2f}'.format)  # Round to 2 decimal
+cor_data.head()
+
+
 Netflix_data_2dbinned.query('variable == "Netflix Price"')['variable2'].unique()
-Price_vs_Happiness = Netflix_data_2dbinned.query('(variable == "Netflix Price") & (variable2 == "Ladder score")')
+Price_vs_Happiness = Netflix_data_2dbinned.query('(variable == "Netflix Price") & (variable2 == "Happiness score")')
 feature_sel_cor = alt.selection_single(fields=['variable', 'variable2'], clear=False, 
                                   init={'variable': 'Inflation', 'variable2': 'Generosity'})
 
 # creation of the correlation heatmap
 base = alt.Chart(cor_data).encode(
         x='variable:O',
-        y='variable2:O'    
+        y='variable2:O', 
+    
         )
 
 text = base.mark_text().encode(
@@ -298,7 +278,7 @@ text = base.mark_text().encode(
         )
 
 cor_plot = base.mark_rect().encode(
-           color=alt.condition(feature_sel_cor, alt.value('pink'), 'correlation:Q')
+           color=alt.condition(feature_sel_cor, alt.value('pink'), 'correlation:Q', scale=alt.Scale(range= ['#336666', '#FFFFFF', '#336666']))
            ).add_selection(feature_sel_cor)
 
 # Creation of the 2d binned histogram plot
@@ -307,9 +287,12 @@ scat_plot = alt.Chart(Netflix_data_2dbinned).transform_filter(
             ).mark_rect().encode(
             alt.X('feature:N', sort=alt.EncodingSortField(field='raw_left_value')), 
             alt.Y('feature2:N', sort=alt.EncodingSortField(field='raw_left_value2', order='descending')),
-            alt.Color('proportion:Q', scale=alt.Scale(scheme='blues'))
+            alt.Color('proportion:Q', scale=alt.Scale(range= ['#336666', '#FFFFFF', '#91b8bd']))
             )
-
+#scheme='greens'
+#color = alt.Color('Happiness score', scale=alt.Scale(range= ['#336666', '#acc8d4', '#91b8bd']
+            #strokeDash = 'Country_Name'
+#            ))
 # Combine both plots. hconcat plots, put both side-by-side with titles
 final = alt.hconcat((cor_plot + text).properties(width=500, height=500,
             title = {
@@ -329,113 +312,15 @@ final = alt.hconcat((cor_plot + text).properties(width=500, height=500,
                      }          
                     )).resolve_scale(color='independent')
 
-
+## Faced a error parsing the figures, googled on the error, fix as follows
+alt.data_transformers.disable_max_rows()
 
 st.altair_chart(final)
 
 
-############### Global Netflix Pricing Correlation Analysis by Region ##################
-fig, ax = plt.subplots(1,4, figsize=(16, 6), sharey=True)
+# ######################################################################
 
-fig.suptitle("Global Vs Western Europe vs North America vs Central and Eastern Europe Pricing Correlation Analysis", fontsize=16)
+# st.pyplot(fig)
 
-global_corr = df.corr()[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-WE_df = df[df['Region']=='Western Europe']
-WE_corr = WE_df.corr()[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-NA_df = df[df['Region']=='North America and ANZ']
-NA_corr = NA_df.corr()[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-CE_df = df[df['Region']=='Central and Eastern Europe']
-CE_corr = CE_df.corr()[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-
-
-sns.heatmap(global_corr, ax=ax[0], annot=True)
-sns.heatmap(WE_corr, ax=ax[1], annot=True)
-sns.heatmap(NA_corr, ax=ax[2], annot=True)
-sns.heatmap(CE_corr, ax=ax[3], annot=True)
-
-ax[0].title.set_text('Global')
-ax[1].title.set_text('Western Europe')
-ax[2].title.set_text('North America and ANZ')
-ax[3].title.set_text('Central and Eastern Europe')
-
-
-st.pyplot(fig) #hopefullly this plots correctly
-
-
-
-
-##### Another Netflix Pricing correlation analysis by region: ###########
-fig, ax = plt.subplots(1,4, figsize=(16, 6), sharey=True)
-
-fig.suptitle("Middle East Vs Latin America vs East Asia vs South East Asia Pricing Correlation Analysis", fontsize=16)
-
-ME_df = df[df['Region']=='Middle East and North Africa']
-ME_corr = WE_df.corr()[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-LAC_df = df[df['Region']=='Latin America and Caribbean']
-LAC_corr = LAC_df.corr()[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-EA_df = df[df['Region']=='East Asia']
-EA_corr = EA_df.corr()[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-SEA_df = df[df['Region']=='Southeast Asia']
-SEA_corr = SEA_df.corr()[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-sns.heatmap(ME_corr, ax=ax[0], annot=True)
-sns.heatmap(LAC_corr, ax=ax[1], annot=True)
-sns.heatmap(EA_corr, ax=ax[2], annot=True)
-sns.heatmap(SEA_corr, ax=ax[3], annot=True)
-
-
-ax[0].title.set_text('Middle East and North Africa')
-ax[1].title.set_text('Latin America and Caribbean')
-ax[2].title.set_text('East Asia')
-ax[3].title.set_text('Southeast Asia')
-
-st.pyplot(fig)
-
-
-############### Correlation analysis with Southeast Asia ##################
-aly.corr(df[df['Region']=='Southeast Asia'])
-
-
-############## World map of Happiness, Total Library Size, and European countries ##### 
-revised_df = df.dropna() # removes na values 
-
-fig = px.scatter_geo(revised_df, locations="Country", locationmode = 'country names',
-                     color="Ladder score", # sets the color of markers
-                     hover_name="Country", 
-                     size="Total Library Size", # size of markers
-                     scope = 'europe',
-                     title = 'Happiness and Library Size'
-)
-# Scope can take the following values:
-#[‘world’, ‘usa’, ‘europe’, ‘asia’, ‘africa’, ‘north america’, ‘south america’]
-# fig.show()
-
-st.pyplot(fig)
-
-
-############ Logged GDP per capita vs Happiness score by Country ######
-df = df.rename(columns={"Ladder score": "Happiness score"})
-fig=px.scatter(df,
-              x='Happiness score',
-              y='Logged GDP per capita',
-              size='Netflix Price',
-              template='plotly_white',
-              color='Region',
-              hover_name='Country',
-              labels={"Netflix Price": "Size", "Region": "Region"},
-              size_max=40)
-fig.update_layout(title='Logged GDP per capita vs Happiness score by Country')
-
-st.pyplot(fig)
-
-######################################################################
-# Outliers
-######################################################################
-
-
+st.info(
+    "Further analysis is needed for project to be robust.")
