@@ -1,5 +1,5 @@
 import streamlit as st
-
+## This app can be accessed at: https://kaspersj-milestone-i-streamlitnetflix-analysis-k2jww2.streamlitapp.com
 #################### Imports: ############################
 ## Importing the usual suspects
 import seaborn as sns
@@ -58,17 +58,17 @@ st.dataframe(df)
 
 # Drop first column
 df = df.iloc[: , 1:]
-df.head()
-
+# df.head()
+# st.markdown('Happiness Data')
 happiness_years = pd.read_csv('Happiness.csv')
-happiness_years.head()
+# happiness_years.head()
 
 # Drop first column
 happiness_years = happiness_years.iloc[: , 1:]
-happiness_years.head()
-
+# happiness_years.head()
+st.markdown('Regional data')
 region_grouped = df.groupby(['Region']).agg('mean')
-region_grouped
+# region_grouped
 
 
 ########### Visualizing df ##########
@@ -86,12 +86,12 @@ cleaned_df = df.dropna(subset=["Happiness score"])
 cleaned_df.head()
 
 ############ Happiness score chart by country ####
-st.markdown('Happiness Score Chart')
-country_happiness_chart = alt.Chart(cleaned_df).mark_bar().encode(
-    x = alt.X('Happiness score:Q'),
-    y = alt.Y('Country:N', sort='-x')
-)
-st.altair_chart(country_happiness_chart)
+# st.markdown('Happiness Score Chart by Country')
+# country_happiness_chart = alt.Chart(cleaned_df).mark_bar().encode(
+#     x = alt.X('Happiness score:Q'),
+#     y = alt.Y('Country:N', sort='-x')
+# )
+# st.altair_chart(country_happiness_chart)
 st.markdown('\n\n')
 st.markdown('Regional Happiness Score Chart')
 ###### Regional happiness
@@ -101,6 +101,9 @@ happiness_score_by_country_chart = alt.Chart(cleaned_df).mark_bar().encode(
 )
 
 st.altair_chart(happiness_score_by_country_chart)
+
+st.markdown('Global Netflix Prices')
+
 ################# Price of Netflix Worldwide
 fig = px.choropleth(df, 
                         locations="Country", locationmode='country names',
@@ -114,6 +117,9 @@ fig.update(layout=dict(title=dict(x=0.5)))
 # fig =  plt.subplots()
 # fig.show()
 st.plotly_chart(fig)
+
+st.markdown('\n\n')
+st.markdown('We tried to find happiness scores that changed over the years to gain some insight. For example:')
 
 ##################### Happiness scores over time
 fig = px.choropleth(happiness_years, locations="Country", locationmode='country names',
@@ -139,7 +145,7 @@ fig.show()
 st.plotly_chart(fig)
 
 st.markdown('\n\n')
-st.markdown('We tried to find happiness scores that changed over the years to gain some insight. For example:')
+st.markdown('We looked at spread and correlation, and charted Netflix Price vs. Explained by___ variables:')
 
 ############ Thomas' Correlation analysis
 fig, axes = plt.subplots(3, 2, figsize=(16,12))
@@ -235,9 +241,9 @@ def heat_2d_hist(var1, var2, df, density=True):
     
     return res.dropna() # Drop all combinations for which no values where found
 
-
+st.markdown('We visualized the correlation between the various features using an interactive altair plot. This chart helped the team in exploring the correlation structure of our dataset using two connected sub plots - a (i) correlation heatmap and a (ii) 2d histogram showing the density of points. Clicking on a rectangle in the heatmap will allow the user to see the variable associated with that particular cell the corresponding data in the 2d histogram!')
 ################# Interactive Heatmap of Correlations
-
+st.info('This plot enables you to see pattern in correlations using the heatmap, and whats unique is that it allows you to zoom in on the data underlying those correlations in the 2d histogram.')
 Cor_df = df
 
 Cor_df.dropna(inplace=True)
@@ -322,5 +328,57 @@ st.altair_chart(final)
 
 # st.pyplot(fig)
 
-st.info(
-    "Further analysis is needed for project to be robust.")
+
+########################################## Regional Correlation Chart ########################################
+st.set_option('deprecation.showPyplotGlobalUse', False)
+st.markdown('We looked at the correlation of each region. The variable on the x-axis is called the independent variable (Explanatory), and the variable on the y-axis is called the dependent variable(Response). Strength of the relationship between two variables (-1 and +1) is called the correlation coefficient.')
+
+def corr_chart():
+
+    fig, ax = plt.subplots(1,6, figsize=(23, 10), sharey=True)
+
+    fig.suptitle("Global, WE, NA, CEE, SEA, MENA Pricing Correlation Analysis", fontsize=16)
+    
+    
+    ##dataframe creation
+    
+    global_corr = df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    
+    WE_df = df[df['Region']=='Western Europe']
+    WE_corr = WE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    NA_df = df[df['Region']=='North America and ANZ']
+    NA_corr = NA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    CE_df = df[df['Region']=='Central and Eastern Europe']
+    CE_corr = CE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    SEA_df = df[df['Region']=='Southeast Asia']
+    SEA_corr = SEA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    MENA_df = df[df['Region']=='Middle East and North Africa']
+    MENA_corr = MENA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    ## heatmap creation
+    
+    sns.heatmap(global_corr, ax=ax[0], annot=True)
+    sns.heatmap(WE_corr, ax=ax[1], annot=True)
+    sns.heatmap(NA_corr, ax=ax[2], annot=True)
+    sns.heatmap(CE_corr, ax=ax[3], annot=True)
+    sns.heatmap(SEA_corr, ax=ax[4], annot=True)
+    sns.heatmap(MENA_corr, ax=ax[5], annot=True)
+    
+    ## text creation
+    
+    ax[0].title.set_text('Global')
+    ax[1].title.set_text('Western Europe')
+    ax[2].title.set_text('North America and ANZ')
+    ax[3].title.set_text('Central and Eastern Europe')
+    ax[4].title.set_text('South East Asia')
+    ax[5].title.set_text('Middle East and North Africa')
+
+    return 
+
+st.pyplot(corr_chart())
+
+# st.info("Further analysis is needed for project to be robust.")
