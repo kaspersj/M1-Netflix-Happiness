@@ -53,14 +53,14 @@ st.markdown('\n\n')
 ###########################################################################
 
 # We export the final dataframe as df.csv
-df = pd.read_csv('/work/Milestone_I/Streamlit/Data_files/df.csv')
+df = pd.read_csv('/Streamlit/Data_files/df.csv')
 st.dataframe(df)
 
 # Drop first column
 df = df.iloc[: , 1:]
 # df.head()
 # st.markdown('Happiness Data')
-happiness_years = pd.read_csv('/work/Milestone_I/Streamlit/Data_files/Happiness.csv')
+happiness_years = pd.read_csv('/Streamlit/Data_files/Happiness.csv')
 # happiness_years.head()
 
 # Drop first column
