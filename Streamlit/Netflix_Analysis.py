@@ -29,6 +29,9 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
+import os
+
+
 # %reload_ext watermark
 
 ############################ Disabling Maxrows ##############################
@@ -36,7 +39,7 @@ alt.data_transformers.disable_max_rows()
 ################## Title and beginning of analysis ###################
 
 st.title('Our Netflix Analysis')
-
+st.title(os.getcwd())
 st.header("John Kaspers (kaspersj), Ong Hock Boon Steven David (steveong), Chi Huen Fong (chfong)")
 st.markdown('\n\n')
 st.header("Supplementary visualizations - some are interactive!")
