@@ -41,7 +41,22 @@ st.title('Our Netflix Analysis')
 st.title(os.getcwd())
 
 st.title(os.path.dirname(os.path.realpath(__file__)))
+# st.title()
 
+# Playing with file paths
+# The path for listing items
+path = '.'
+ 
+# The list of items
+files = os.listdir(path)
+ 
+# Loop to print each filename separately
+for filename in files:
+    print(filename)
+
+
+
+##########################################################
 st.header("John Kaspers (kaspersj), Ong Hock Boon Steven David (steveong), Chi Huen Fong (chfong)")
 st.markdown('\n\n')
 st.header("Supplementary visualizations - some are interactive!")
@@ -59,14 +74,14 @@ st.markdown('\n\n')
 
 # We export the final dataframe as df.csv
 # The clipboard path is: /work/Milestone_I/Streamlit/Data_files/df.csv
-df = pd.read_csv('Data_files/df.csv')
+df = pd.read_csv('/work/Milestone_I/Streamlit/Data_files/df.csv')
 st.dataframe(df)
 
 # Drop first column
 df = df.iloc[: , 1:]
 # df.head()
 # st.markdown('Happiness Data')
-happiness_years = pd.read_csv('Data_files/Happiness.csv')
+happiness_years = pd.read_csv('/work/Milestone_I/Streamlit/Data_files/Happiness.csv')
 # happiness_years.head()
 
 # Drop first column
