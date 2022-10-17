@@ -38,35 +38,33 @@ alt.data_transformers.disable_max_rows()
 ################## Title and beginning of analysis ###################
 
 st.title('Our Netflix Analysis')
-st.title(os.getcwd())
 
-st.title(os.path.dirname(os.path.realpath(__file__)))
-# st.title()
+########################### Figuring out if the file path is correct ######################################
+# st.title(os.getcwd())
 
-# Playing with file paths
-# The path for listing items
-path = '.'
+# st.title(os.path.dirname(os.path.realpath(__file__)))
+# # st.title()
+
+# # Playing with file paths
+# # The path for listing items
+# path = '.'
  
-# The list of items
-files = os.listdir(path)
+# # The list of items
+# files = os.listdir(path)
  
-# Loop to print each filename separately
-for filename in files:
-    st.text(filename)
+# # Loop to print each filename separately
+# for filename in files:
+#     st.text(filename)
 
-###################
+# st.text("#############")
+# from os.path import exists
+# st.text(exists('df.csv'))
 
-st.text("#############")
-from os.path import exists
-st.text(exists('df.csv'))
-
-st.text(exists('df_file2.xlsx'))
-st.text(exists('Happiness.csv'))
+# st.text(exists('df_file2.xlsx'))
+# st.text(exists('Happiness.csv'))
 
 
-st.text(exists('/work/Milestone_I/Streamlit/requirements.txt'))
-
-
+# st.text(exists('/work/Milestone_I/Streamlit/requirements.txt'))
 
 ##########################################################
 st.header("John Kaspers (kaspersj), Ong Hock Boon Steven David (steveong), Chi Huen Fong (chfong)")
@@ -274,6 +272,59 @@ def heat_2d_hist(var1, var2, df, density=True):
     
     return res.dropna() # Drop all combinations for which no values where found
 
+########################################## Regional Correlation Chart ########################################
+st.set_option('deprecation.showPyplotGlobalUse', False)
+st.markdown('We looked at the correlation of each region. The variable on the x-axis is called the independent variable (Explanatory), and the variable on the y-axis is called the dependent variable(Response). Strength of the relationship between two variables (-1 and +1) is called the correlation coefficient.')
+
+def corr_chart():
+
+    fig, ax = plt.subplots(1,6, figsize=(23, 10), sharey=True)
+
+    fig.suptitle("Global, WE, NA, CEE, SEA, MENA Pricing Correlation Analysis", fontsize=16)
+    
+    
+    ##dataframe creation
+    
+    global_corr = df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    
+    WE_df = df[df['Region']=='Western Europe']
+    WE_corr = WE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    NA_df = df[df['Region']=='North America and ANZ']
+    NA_corr = NA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    CE_df = df[df['Region']=='Central and Eastern Europe']
+    CE_corr = CE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    SEA_df = df[df['Region']=='Southeast Asia']
+    SEA_corr = SEA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    MENA_df = df[df['Region']=='Middle East and North Africa']
+    MENA_corr = MENA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    ## heatmap creation
+    
+    sns.heatmap(global_corr, ax=ax[0], annot=True)
+    sns.heatmap(WE_corr, ax=ax[1], annot=True)
+    sns.heatmap(NA_corr, ax=ax[2], annot=True)
+    sns.heatmap(CE_corr, ax=ax[3], annot=True)
+    sns.heatmap(SEA_corr, ax=ax[4], annot=True)
+    sns.heatmap(MENA_corr, ax=ax[5], annot=True)
+    
+    ## text creation
+    
+    ax[0].title.set_text('Global')
+    ax[1].title.set_text('Western Europe')
+    ax[2].title.set_text('North America and ANZ')
+    ax[3].title.set_text('Central and Eastern Europe')
+    ax[4].title.set_text('South East Asia')
+    ax[5].title.set_text('Middle East and North Africa')
+
+    return 
+
+st.pyplot(corr_chart())
+
+
 st.markdown('We visualized the correlation between the various features using an interactive altair plot. This chart helped the team in exploring the correlation structure of our dataset using two connected sub plots - a (i) correlation heatmap and a (ii) 2d histogram showing the density of points. Clicking on a rectangle in the heatmap will allow the user to see the variable associated with that particular cell the corresponding data in the 2d histogram!')
 ################# Interactive Heatmap of Correlations
 st.info('This plot enables you to see pattern in correlations using the heatmap, and whats unique is that it allows you to zoom in on the data underlying those correlations in the 2d histogram.')
@@ -362,56 +413,6 @@ st.altair_chart(final)
 # st.pyplot(fig)
 
 
-########################################## Regional Correlation Chart ########################################
-st.set_option('deprecation.showPyplotGlobalUse', False)
-st.markdown('We looked at the correlation of each region. The variable on the x-axis is called the independent variable (Explanatory), and the variable on the y-axis is called the dependent variable(Response). Strength of the relationship between two variables (-1 and +1) is called the correlation coefficient.')
 
-def corr_chart():
-
-    fig, ax = plt.subplots(1,6, figsize=(23, 10), sharey=True)
-
-    fig.suptitle("Global, WE, NA, CEE, SEA, MENA Pricing Correlation Analysis", fontsize=16)
-    
-    
-    ##dataframe creation
-    
-    global_corr = df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-    
-    WE_df = df[df['Region']=='Western Europe']
-    WE_corr = WE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-    NA_df = df[df['Region']=='North America and ANZ']
-    NA_corr = NA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-    CE_df = df[df['Region']=='Central and Eastern Europe']
-    CE_corr = CE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-    SEA_df = df[df['Region']=='Southeast Asia']
-    SEA_corr = SEA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-    MENA_df = df[df['Region']=='Middle East and North Africa']
-    MENA_corr = MENA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
-
-    ## heatmap creation
-    
-    sns.heatmap(global_corr, ax=ax[0], annot=True)
-    sns.heatmap(WE_corr, ax=ax[1], annot=True)
-    sns.heatmap(NA_corr, ax=ax[2], annot=True)
-    sns.heatmap(CE_corr, ax=ax[3], annot=True)
-    sns.heatmap(SEA_corr, ax=ax[4], annot=True)
-    sns.heatmap(MENA_corr, ax=ax[5], annot=True)
-    
-    ## text creation
-    
-    ax[0].title.set_text('Global')
-    ax[1].title.set_text('Western Europe')
-    ax[2].title.set_text('North America and ANZ')
-    ax[3].title.set_text('Central and Eastern Europe')
-    ax[4].title.set_text('South East Asia')
-    ax[5].title.set_text('Middle East and North Africa')
-
-    return 
-
-st.pyplot(corr_chart())
 
 # st.info("Further analysis is needed for project to be robust.")
