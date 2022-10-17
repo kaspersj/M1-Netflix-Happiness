@@ -52,7 +52,7 @@ files = os.listdir(path)
  
 # Loop to print each filename separately
 for filename in files:
-    print(filename)
+    st.text(filename)
 
 
 
