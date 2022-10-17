@@ -31,7 +31,6 @@ import plotly.graph_objects as go
 
 import os
 
-
 # %reload_ext watermark
 
 ############################ Disabling Maxrows ##############################
@@ -40,6 +39,9 @@ alt.data_transformers.disable_max_rows()
 
 st.title('Our Netflix Analysis')
 st.title(os.getcwd())
+
+st.title(os.path.dirname(os.path.realpath(__file__)))
+
 st.header("John Kaspers (kaspersj), Ong Hock Boon Steven David (steveong), Chi Huen Fong (chfong)")
 st.markdown('\n\n')
 st.header("Supplementary visualizations - some are interactive!")
