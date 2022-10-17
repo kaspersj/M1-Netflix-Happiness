@@ -54,6 +54,18 @@ files = os.listdir(path)
 for filename in files:
     st.text(filename)
 
+###################
+
+st.text("#############")
+from os.path import exists
+st.text(exists('df.csv'))
+
+st.text(exists('df_file2.xlsx'))
+st.text(exists('Happiness.csv'))
+
+
+st.text(exists('/work/Milestone_I/Streamlit/requirements.txt'))
+
 
 
 ##########################################################
@@ -74,14 +86,14 @@ st.markdown('\n\n')
 
 # We export the final dataframe as df.csv
 # The clipboard path is: /work/Milestone_I/Streamlit/Data_files/df.csv
-df = pd.read_csv('/work/Milestone_I/Streamlit/Data_files/df.csv')
+df = pd.read_csv('/app/milestone_i/Streamlit/df.csv')
 st.dataframe(df)
 
 # Drop first column
 df = df.iloc[: , 1:]
 # df.head()
 # st.markdown('Happiness Data')
-happiness_years = pd.read_csv('/work/Milestone_I/Streamlit/Data_files/Happiness.csv')
+happiness_years = pd.read_csv('/app/milestone_i/Streamlit/Happiness.csv')
 # happiness_years.head()
 
 # Drop first column
