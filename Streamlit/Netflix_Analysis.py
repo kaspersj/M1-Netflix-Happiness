@@ -30,8 +30,14 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
 import os
+from pathlib import Path
 
 # %reload_ext watermark
+
+##########################################################################
+def getPathInStreamlitDir():
+    return Path(__file__).parents[1] / str('Streamlit/')
+
 
 ############################ Disabling Maxrows ##############################
 alt.data_transformers.disable_max_rows()
@@ -84,14 +90,27 @@ st.markdown('\n\n')
 
 # We export the final dataframe as df.csv
 # The clipboard path is: /work/Milestone_I/Streamlit/Data_files/df.csv
-df = pd.read_csv('/app/milestone_i/Streamlit/Data_files/df.csv')
+
+########
+csv_path1 = getPathInStreamlitDir() / str('Data_files/df.csv')
+
+df = pd.read_csv(csv_path1)
+#########
+# df = pd.read_csv('/app/milestone_i/Streamlit/Data_files/df.csv')
 st.dataframe(df)
 
 # Drop first column
 df = df.iloc[: , 1:]
 # df.head()
 # st.markdown('Happiness Data')
-happiness_years = pd.read_csv('/app/milestone_i/Streamlit/Data_files/Happiness.csv')
+
+########
+csv_path2 = getPathInStreamlitDir() / str('Data_files/Happiness.csv')
+
+happiness_years = pd.read_csv(csv_path2)
+#########
+
+# happiness_years = pd.read_csv('/app/milestone_i/Streamlit/Data_files/Happiness.csv')
 # happiness_years.head()
 
 # Drop first column
@@ -103,12 +122,12 @@ region_grouped = df.groupby(['Region']).agg('mean')
 
 
 ########### Visualizing df ##########
-aly.dist(df, mark='bar')
+# aly.dist(df, mark='bar')
 
-g = sns.PairGrid(df, palette='rainbow', hue="Region")
-g.map_diag(sns.histplot)
-g.map_offdiag(sns.scatterplot)
-g.add_legend()
+# g = sns.PairGrid(df, palette='rainbow', hue="Region")
+# g.map_diag(sns.histplot)
+# g.map_offdiag(sns.scatterplot)
+# g.add_legend()
 
 ####### Preparing the Happiness dataframe
 
