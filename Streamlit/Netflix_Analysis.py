@@ -359,7 +359,8 @@ Netflix_data_2dbinned.head()
 
 
 ####### Correlation Data
-cor_data = (df.drop(columns=['Country'])
+numeric_cols = list(df.select_dtypes(include=np.number).columns)
+cor_data = (df.drop(columns=['Country'])[numeric_cols]
               .corr().stack()
               .reset_index()     # The stacking results in an index on the correlation values, we need the index as normal columns for Altair
               .rename(columns={0: 'correlation', 'level_0': 'variable', 'level_1': 'variable2'}))
