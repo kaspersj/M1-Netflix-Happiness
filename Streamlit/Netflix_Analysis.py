@@ -359,13 +359,11 @@ Netflix_data_2dbinned.head()
 
 
 ####### Correlation Data
-numeric_cols = list(df.select_dtypes(include=np.number).columns)
-cor_data = (df.drop(columns=['Country'])[numeric_cols]
+cor_data = (df.drop(columns=['Country'])
               .corr().stack()
               .reset_index()     # The stacking results in an index on the correlation values, we need the index as normal columns for Altair
               .rename(columns={0: 'correlation', 'level_0': 'variable', 'level_1': 'variable2'}))
 cor_data['correlation_label'] = cor_data['correlation'].map('{:.2f}'.format)  # Round to 2 decimal
-print(cor_data.head())
 
 
 Netflix_data_2dbinned.query('variable == "Netflix Price"')['variable2'].unique()
