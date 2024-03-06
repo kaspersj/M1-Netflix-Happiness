@@ -94,7 +94,7 @@ st.markdown('\n\n')
 ########
 csv_path1 = getPathInStreamlitDir() / str('Data_files/df.csv')
 
-df = pd.read_csv(csv_path1)
+df = pd.read_csv(csv_path1, delimiter=',')
 #########
 # df = pd.read_csv('/app/milestone_i/Streamlit/Data_files/df.csv',delimiter=',')
 st.dataframe(df)
