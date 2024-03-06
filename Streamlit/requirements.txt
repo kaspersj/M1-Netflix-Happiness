@@ -1,6 +1,6 @@
 numpy
 pandas==1.5.3
-altair
+altair==4.2.2
 streamlit
 
 matplotlib
