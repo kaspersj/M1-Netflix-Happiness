@@ -94,9 +94,9 @@ st.markdown('\n\n')
 ########
 csv_path1 = getPathInStreamlitDir() / str('Data_files/df.csv')
 
-df = pd.read_csv(csv_path1, delimiter=',')
+df = pd.read_csv(csv_path1)
 #########
-# df = pd.read_csv('/app/milestone_i/Streamlit/Data_files/df.csv',delimiter=',')
+# df = pd.read_csv('/app/milestone_i/Streamlit/Data_files/df.csv')
 st.dataframe(df)
 
 # Drop first column
@@ -117,8 +117,7 @@ happiness_years = pd.read_csv(csv_path2)
 happiness_years = happiness_years.iloc[: , 1:]
 # happiness_years.head()
 st.markdown('Regional data')
-numeric_cols = list(df.select_dtypes(include=np.number).columns)
-region_grouped = df.groupby(['Region'])[numeric_cols].agg('mean')
+region_grouped = df.groupby(['Region']).agg('mean')
 # region_grouped
 
 
@@ -304,24 +303,23 @@ def corr_chart():
     
     
     ##dataframe creation
-
-    numeric_cols = list(df.select_dtypes(include=np.number).columns)
-    global_corr = df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    
+    global_corr = df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
     
     WE_df = df[df['Region']=='Western Europe']
-    WE_corr = WE_df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    WE_corr = WE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
 
     NA_df = df[df['Region']=='North America and ANZ']
-    NA_corr = NA_df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    NA_corr = NA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
 
     CE_df = df[df['Region']=='Central and Eastern Europe']
-    CE_corr = CE_df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    CE_corr = CE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
 
     SEA_df = df[df['Region']=='Southeast Asia']
-    SEA_corr = SEA_df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    SEA_corr = SEA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
 
     MENA_df = df[df['Region']=='Middle East and North Africa']
-    MENA_corr = MENA_df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    MENA_corr = MENA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
 
     ## heatmap creation
     
@@ -364,6 +362,7 @@ cor_data = (df.drop(columns=['Country'])
               .reset_index()     # The stacking results in an index on the correlation values, we need the index as normal columns for Altair
               .rename(columns={0: 'correlation', 'level_0': 'variable', 'level_1': 'variable2'}))
 cor_data['correlation_label'] = cor_data['correlation'].map('{:.2f}'.format)  # Round to 2 decimal
+cor_data.head()
 
 
 Netflix_data_2dbinned.query('variable == "Netflix Price"')['variable2'].unique()
