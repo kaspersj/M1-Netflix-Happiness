@@ -117,8 +117,8 @@ happiness_years = pd.read_csv(csv_path2)
 happiness_years = happiness_years.iloc[: , 1:]
 # happiness_years.head()
 st.markdown('Regional data')
-
-region_grouped = df.groupby(['Region'],dropna=True).agg('mean')
+numeric_cols = list(df.select_dtypes(include=np.number).columns)
+region_grouped = df.groupby(['Region'])[numeric_cols].agg('mean')
 # region_grouped
 
 
