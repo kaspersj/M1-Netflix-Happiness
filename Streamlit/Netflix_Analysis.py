@@ -304,8 +304,9 @@ def corr_chart():
     
     
     ##dataframe creation
-    
-    global_corr = df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+
+    numeric_cols = list(df.select_dtypes(include=np.number).columns)
+    global_corr = df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
     
     WE_df = df[df['Region']=='Western Europe']
     WE_corr = WE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
