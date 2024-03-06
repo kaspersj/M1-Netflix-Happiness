@@ -309,19 +309,19 @@ def corr_chart():
     global_corr = df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
     
     WE_df = df[df['Region']=='Western Europe']
-    WE_corr = WE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    WE_corr = WE_df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
 
     NA_df = df[df['Region']=='North America and ANZ']
-    NA_corr = NA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    NA_corr = NA_df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
 
     CE_df = df[df['Region']=='Central and Eastern Europe']
-    CE_corr = CE_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    CE_corr = CE_df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
 
     SEA_df = df[df['Region']=='Southeast Asia']
-    SEA_corr = SEA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    SEA_corr = SEA_df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
 
     MENA_df = df[df['Region']=='Middle East and North Africa']
-    MENA_corr = MENA_df.corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
+    MENA_corr = MENA_df[numeric_cols].corr(method ='spearman')[['Netflix Price']].sort_values(by = 'Netflix Price', ascending = False)
 
     ## heatmap creation
     
