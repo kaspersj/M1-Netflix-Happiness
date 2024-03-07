@@ -1,6 +1,6 @@
 # Netflix and Happiness
 
-https://kaspersj-milestone-i-streamlitnetflix-analysis-k2jww2.streamlitapp.com/
+[https://milestoneiappdebug-uddkpqnxwjdbeabxxp2ifp.streamlit.app/]
 
 ## Description
 
