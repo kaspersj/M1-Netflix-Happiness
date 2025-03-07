@@ -1,5 +1,6 @@
 # Netflix and Happiness
 
+This link led to a streamlit app that spins up after a few minutes...
 [https://milestoneiappdebug-uddkpqnxwjdbeabxxp2ifp.streamlit.app/]
 
 ## Description
